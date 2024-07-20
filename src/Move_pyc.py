@@ -2,16 +2,22 @@ import os
 import shutil
 
 def mover_pyc_a_directorio(directorio_pyc):
+    # Asegurarse de que el directorio de destino existe
     if not os.path.exists(directorio_pyc):
         os.makedirs(directorio_pyc)
 
-    for root, dirs, files in os.walk('.'):
-        for file in files:
-            if file.endswith('.pyc'):
-                ruta_completa = os.path.join(root, file)
-                nuevo_directorio = os.path.join(directorio_pyc, os.path.relpath(root, '.'))
-                if not os.path.exists(nuevo_directorio):
-                    os.makedirs(nuevo_directorio)
-                shutil.move(ruta_completa, os.path.join(nuevo_directorio, file))
-
-mover_pyc_a_directorio('pyc_files')
+    # Recorrer los archivos en el directorio actual
+    for archivo in os.listdir('.'):
+        # Comprobar si es un archivo y termina en .pyc
+        if os.path.isfile(archivo) and archivo.endswith('.pyc'):
+            # Ruta completa del archivo
+            ruta_completa = os.path.join('.', archivo)
+            # Ruta de destino
+            ruta_destino = os.path.join(directorio_pyc, archivo)
+            
+            # Si ya existe un archivo con el mismo nombre en el destino, lo reemplazamos
+            if os.path.exists(ruta_destino):
+                os.remove(ruta_destino)
+            
+            # Mover el archivo
+            shutil.move(ruta_completa, ruta_destino)

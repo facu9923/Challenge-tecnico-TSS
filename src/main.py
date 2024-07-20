@@ -3,8 +3,8 @@ from __future__ import (absolute_import, division, print_function,
 
 import backtrader as bt
 from Strategy import MyStrategy
-import inicData
-import Move_pyc
+import inicData as inicData
+import Move_pyc as Move_pyc
 
 def main():
 
@@ -25,6 +25,6 @@ def main():
 
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
+    Move_pyc.mover_pyc_a_directorio('pyc_files')
 if __name__ == '__main__':
     main()
-    Move_pyc.mover_pyc_a_directorio('pyc_files')
