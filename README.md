@@ -1,6 +1,10 @@
 # Challenge tecnico TSS 
 Este proyecto se basa en realizar una estrategia que realice compra y ventas de activos utilizando las estrategias de simple moving averages - SMA y el framework backtrader
 
+# Requisitos
+Python 2.7.18
+backtrader
+
 # Enunciado
 Utilizando el framework backtrader (Welcome - Backtrader ) realizar una estrategia que realice compra y ventas de activos utilizando las siguientes estrategias de simple moving averages - SMA (How To Use a Moving Average to Buy Stocks ):
 
