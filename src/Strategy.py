@@ -1,4 +1,5 @@
 import backtrader as bt
+import sestrategyLogic
 
 class MyStrategy(bt.Strategy):
     def __init__(self):
@@ -10,7 +11,7 @@ class MyStrategy(bt.Strategy):
         self.sma_data1_30 = bt.indicators.SimpleMovingAverage(
             self.datas[0], period=30 , plotname="30 SMA_1"
         )
-
+        self.crossover_data1 = bt.indicators.CrossOver(self.sma_data1_10, self.sma_data1_30)
         ## indicadores para data2 (AAPL)
         self.sma_data2_10 = bt.indicators.SimpleMovingAverage(
             self.datas[1], period=10, plotname="10 SMA_2"
@@ -18,6 +19,8 @@ class MyStrategy(bt.Strategy):
         self.sma_data2_30 = bt.indicators.SimpleMovingAverage(
             self.datas[1], period=30 , plotname="30 SMA_2"
         )
+
+        self.crossover_data2 = bt.indicators.CrossOver(self.sma_data2_10, self.sma_data2_30)
 
         ## indicadores para data3 (MSFT)
         self.sma_data3_10 = bt.indicators.SimpleMovingAverage(
@@ -27,6 +30,8 @@ class MyStrategy(bt.Strategy):
             self.datas[2], period=30 , plotname="30 SMA_3"
         )
 
+        self.crossover_data3 = bt.indicators.CrossOver(self.sma_data3_10, self.sma_data3_30)
+
         ## indicadores para data4 (TSLA)
         self.sma_data4_10 = bt.indicators.SimpleMovingAverage(
             self.datas[3], period=10, plotname="10 SMA_4"
@@ -35,27 +40,10 @@ class MyStrategy(bt.Strategy):
             self.datas[3], period=30 , plotname="30 SMA_4"
         )
 
+        self.crossover_data4 = bt.indicators.CrossOver(self.sma_data4_10, self.sma_data4_30)
+
     def next(self):
-        if self.sma_data1_10 > self.datas[0].close:
-            self.sell()
-            pass
-
-        elif self.sma_data1_10 < self.datas[0].close:
-            self.buy()
-            pass
-
-        if self.sma_data1_30 > self.datas[0].close:
-            self.sell()
-            pass
-
-        elif self.sma_data1_30 < self.datas[0].close:
-            self.buy()
-            pass
-
-        if self.sma_data1_10 > self.sma_data1_30:
-            self.buy()
-            pass
-        
-        elif self.sma_data1_30 < self.sma_data1_30:
-            self.sell()
-            pass
+        sestrategyLogic.logic_data1(self)
+        sestrategyLogic.logic_data2(self)
+        sestrategyLogic.logic_data3(self)
+        sestrategyLogic.logic_data4(self)
