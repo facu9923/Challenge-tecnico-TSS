@@ -1,5 +1,6 @@
 import backtrader as bt
-import sestrategyLogic
+import strategyLogic
+
 
 class MyStrategy(bt.Strategy):
     def __init__(self):
@@ -43,7 +44,8 @@ class MyStrategy(bt.Strategy):
         self.crossover_data4 = bt.indicators.CrossOver(self.sma_data4_10, self.sma_data4_30)
 
     def next(self):
-        sestrategyLogic.logic_data1(self)
-        sestrategyLogic.logic_data2(self)
-        sestrategyLogic.logic_data3(self)
-        sestrategyLogic.logic_data4(self)
+        strategyLogic.logic_data1(self)
+        strategyLogic.logic_data2(self)
+        strategyLogic.logic_data3(self)
+        strategyLogic.logic_data4(self)
+
