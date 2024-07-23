@@ -5,6 +5,7 @@ from __future__ import (absolute_import, division, print_function,
 import backtrader as bt
 import inicData as inicData
 import Move_pyc as Move_pyc
+import csv
 from Strategies.data1Strategy import data1Strategy
 from Strategies.data2Strategy import data2Strategy
 from Strategies.data3Strategy import data3Strategy
@@ -21,10 +22,18 @@ def main():
 
     inicData.addData(cerebro)
 
-    # cerebro.addstrategy(data1Strategy)
-    # cerebro.addstrategy(data2Strategy)
+    cerebro.addstrategy(data1Strategy)
+    cerebro.addstrategy(data2Strategy)
     cerebro.addstrategy(data3Strategy)
-    # cerebro.addstrategy(data4Strategy)
+    cerebro.addstrategy(data4Strategy)
+
+    filename = 'transactions.csv'
+
+    with open(filename, 'w') as csvfile:
+        csvfile.write('Lista de ordenes de compra y venta de los instrumentos GOOG, AAPL, MSFT y TSLA\n\n')
+        fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
 
     cerebro.run()
 
