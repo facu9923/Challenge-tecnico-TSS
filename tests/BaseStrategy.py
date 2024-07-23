@@ -3,20 +3,24 @@ import backtrader as bt
 
 class BaseStrategy(bt.Strategy):
     def __init__(self):
-        self.buy_records = {} 
+        self.buy_records = []  
         self.buy_orders = []  # Lista para almacenar órdenes de compra
         self.sell_orders = []  # Lista para almacenar órdenes de venta
 
     def notify_order(self, order):
+
         if order.status in [order.Completed]:
             if order.isbuy():
-                self.buy_records[order.data] = order.info['strategy_id']
+                print("SE INTENTA COMPRAR", order.data._name, order.info['info'])
+                self.buy_records.append({'clave': order.data._name, 'atributo': order.info['info']})
                 self.buy_orders.append(order) 
             else:
-                self.sell_orders.append(order) 
-                if self.buy_records.get(order.data) == order.info['strategy_id']:
-                    del self.buy_records[order.data]
-
+                print("SE INTENTA ELIMINAR", order.data._name, order.info['info'])
+                for elemento in self.buy_records:
+                    if elemento['atributo'] == order.info['info']:
+                        self.buy_records.remove(elemento)
+                self.sell_orders.append(order)  
+                
 
     def stop(self):
         # Al final de la estrategia, imprime todas las órdenes

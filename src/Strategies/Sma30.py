@@ -49,7 +49,7 @@
         # elif self.sma_data4_30 < self.datas[3].close:
         #     orders.buy(self, self.datas[3], price4, info={'strategy_id': self.strategy_id})
 import backtrader as bt
-from BaseStrategy import BaseStrategy
+
 
 class StrategySMA30(BaseStrategy):
     strategy_id = 'sma30'

@@ -73,7 +73,7 @@
         #     orders.sell(self, self.datas[3], info={'strategy_id': self.strategy_id})
 
 import backtrader as bt
-from BaseStrategy import BaseStrategy
+from tests.BaseStrategy import BaseStrategy
 
 class StrategyCrossover(BaseStrategy):
     strategy_id = 'crossover'
