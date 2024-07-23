@@ -10,26 +10,23 @@ class data3Strategy(bt.Strategy):
         self.buy_records = [] 
 
     def notify_order(self, order):
-        position = self.getposition(self.datas[2])
         a = self.getposition(self.datas[0])
         if order.status in [order.Completed]:
             if order.isbuy():
                 print('BUY EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
-                info = order.info['info'].pop()
+                # info = order.info['info'].pop()
                 self.getposition(self.data2).size = self.getposition(self.data2).size + order.executed.size
-                self.getposition(self.data0).size -= order.executed.size
-                print('position de data comprada', position.size)
-                print('ojo', a.size)
-                self.buy_records.append({'clave': {order.executed.size}, 'atributo': {info}})
+                # self.getposition(self.data0).size -= order.executed.size
+                print('position de data comprada', self.getposition(self.datas[2]).size)
+                # print('ojo', a.size)
+                # self.buy_records.append({'clave': {order.executed.size}, 'atributo': {info}})
                 # self.getposition(self.data2).size = self.getposition(self.data2).size + order.executed.size
                 # self.getposition(self.data0).size -= order.executed.size
             elif order.issell(): 
                 print('SELL EXECUTED, Price: %.2f, Cost: %.2f, Comm %.2f' % (order.executed.price, order.executed.value, order.executed.size))
                 # info = order.info['info'].pop()
-                print('position de data vendida', position.size)
-                print('ojo', a.size)
-                self.getposition(self.data0).size = self.getposition(self.data0).size - order.executed.size
-                print('ojo', a.size)
+                print('position de data vendida', self.getposition(self.datas[2]))
+                # self.getposition(self.data0).size = self.getposition(self.data0).size - order.executed.size
                 
     def next(self):
 

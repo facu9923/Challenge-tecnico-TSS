@@ -21,10 +21,10 @@ def main():
 
     inicData.addData(cerebro)
 
-    cerebro.addstrategy(data1Strategy)
-    cerebro.addstrategy(data2Strategy)
+    # cerebro.addstrategy(data1Strategy)
+    # cerebro.addstrategy(data2Strategy)
     cerebro.addstrategy(data3Strategy)
-    cerebro.addstrategy(data4Strategy)
+    # cerebro.addstrategy(data4Strategy)
 
     cerebro.run()
 

@@ -13,17 +13,17 @@ class data1Strategy(bt.Strategy):
         position = self.getposition(self.datas[0])
         if order.status in [order.Completed]:
             if order.isbuy():
-                print('BUY EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
-                print('position de data comprada', position.size)
+                # print('BUY EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
+                # print('position de data comprada', position.size)
                 info = order.info['info'].pop()
                 # print({'atributo': order.executed.size, 'clave': info})
 
                 self.buy_records.append({'clave': {order.executed.size}, 'atributo': {info}})
                 # self.listOrders.append({'clave': order.data._name, 'orden': 'compra', 'price':order.executed.price})
             elif order.issell(): 
-                print('SELL EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
-                print('position de data vendida', position.size)
-
+                # print('SELL EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
+                # print('position de data vendida', position.size)
+                pass
                 # self.listOrders.append({'clave': order.data._name, 'orden': 'venta', 'price':order.executed.price})
 
     def next(self):

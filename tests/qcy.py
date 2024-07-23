@@ -1,121 +1,53 @@
 import backtrader as bt
-import datetime
+from datetime import datetime
 
-# Clase base para las estrategias que lleva el registro de las compras
-class BaseStrategy(bt.Strategy):
+class MyStrategy(bt.Strategy):
     def __init__(self):
-        self.buy_records = {}  # Diccionario para registrar qué estrategia compró qué data
-
-    def notify_order(self, order):
-        if order.status in [order.Completed]:
-            if order.isbuy():
-                self.buy_records[order.data] = order.info['strategy_id']
-            elif order.issell():
-                if self.buy_records.get(order.data) == order.info['strategy_id']:
-                    del self.buy_records[order.data]
-
-class StrategySMA10(BaseStrategy):
-    strategy_id = 'sma10'
-    
-    def __init__(self):
-        BaseStrategy.__init__(self)
-        self.sma10 = [bt.indicators.SimpleMovingAverage(data, period=10) for data in self.datas]
+        self.sma0 = bt.indicators.SimpleMovingAverage(self.data0, period=15)
+        self.sma1 = bt.indicators.SimpleMovingAverage(self.data1, period=15)
 
     def next(self):
-        portfolio_value = self.broker.getvalue()
-        cash_to_spend = portfolio_value * 0.10
+        # Posición en data0
+        position0 = self.getposition(self.data0)
+        print(f'Data0: {self.data0._name}, Position Size: {position0.size}')
 
-        for i, data in enumerate(self.datas):
-            price = data.close[0]
-            position = self.getposition(data)
+        # Comprar en data0 si no tenemos posición y el cierre está por encima de SMA
+        if not position0:
+            if self.data0.close[0] > self.sma0[0]:
+                print(f'Comprar en data0: {self.data0._name}')
+                self.buy(data=self.data0, size=100)
+        # Vender en data0 si tenemos posición y el cierre está por debajo de SMA
+        elif self.data0.close[0] < self.sma0[0]:
+            print(f'Vender en data0: {self.data0._name}')
+            self.sell(data=self.data0, size=100)
 
-            if price > self.sma10[i][0] and not position:
-                size = cash_to_spend / price
-                self.buy(data=data, size=size, info={'strategy_id': self.strategy_id})
-            elif price < self.sma10[i][0] and position.size > 0:
-                if self.buy_records.get(data) == self.strategy_id:
-                    self.sell(data=data, size=position.size, info={'strategy_id': self.strategy_id})
+        # Posición en data1
+        position1 = self.getposition(self.data1)
+        print(f'Data1: {self.data1._name}, Position Size: {position1.size}')
 
-class StrategySMA30(BaseStrategy):
-    strategy_id = 'sma30'
-    
-    def __init__(self):
-        BaseStrategy.__init__(self)
-        self.sma30 = [bt.indicators.SimpleMovingAverage(data, period=30) for data in self.datas]
+        # Comprar en data1 si no tenemos posición y el cierre está por encima de SMA
+        if not position1:
+            if self.data1.close[0] > self.sma1[0]:
+                print(f'Comprar en data1: {self.data1._name}')
+                self.buy(data=self.data1, size=100)
+        # Vender en data1 si tenemos posición y el cierre está por debajo de SMA
+        elif self.data1.close[0] < self.sma1[0]:
+            print(f'Vender en data1: {self.data1._name}')
+            self.sell(data=self.data1, size=100)
 
-    def next(self):
-        portfolio_value = self.broker.getvalue()
-        cash_to_spend = portfolio_value * 0.10
+if __name__ == '__main__':
+    cerebro = bt.Cerebro()
+    cerebro.addstrategy(MyStrategy)
 
-        for i, data in enumerate(self.datas):
-            price = data.close[0]
-            position = self.getposition(data)
+    # Agregar el primer conjunto de datos
+    data0 = bt.feeds.YahooFinanceData(dataname='AAPL', fromdate=datetime(2020, 1, 1), todate=datetime(2021, 1, 10))
+    data0._name = 'AAPL'
+    cerebro.adddata(data0)
 
-            if price > self.sma30[i][0] and not position:
-                size = cash_to_spend / price
-                self.buy(data=data, size=size, info={'strategy_id': self.strategy_id})
-            elif price < self.sma30[i][0] and position.size > 0:
-                if self.buy_records.get(data) == self.strategy_id:
-                    self.sell(data=data, size=position.size, info={'strategy_id': self.strategy_id})
+    # Agregar el segundo conjunto de datos
+    data1 = bt.feeds.YahooFinanceData(dataname='MSFT', fromdate=datetime(2020, 1, 1), todate=datetime(2021, 1, 10))
+    data1._name = 'MSFT'
+    cerebro.adddata(data1)
 
-class StrategyCrossover(BaseStrategy):
-    strategy_id = 'crossover'
-    
-    def __init__(self):
-        BaseStrategy.__init__(self)
-        self.sma10 = [bt.indicators.SimpleMovingAverage(data, period=10) for data in self.datas]
-        self.sma30 = [bt.indicators.SimpleMovingAverage(data, period=30) for data in self.datas]
-        self.crossover = [bt.indicators.CrossOver(self.sma10[i], self.sma30[i]) for i, data in enumerate(self.datas)]
-
-    def next(self):
-        portfolio_value = self.broker.getvalue()
-        cash_to_spend = portfolio_value * 0.10
-
-        for i, data in enumerate(self.datas):
-            price = data.close[0]
-            position = self.getposition(data)
-
-            if self.crossover[i] > 0 and not position:
-                size = cash_to_spend / price
-                self.buy(data=data, size=size, info={'strategy_id': self.strategy_id})
-            elif self.crossover[i] < 0 and position.size > 0:
-                if self.buy_records.get(data) == self.strategy_id:
-                    self.sell(data=data, size=position.size, info={'strategy_id': self.strategy_id})
-
-# Configuración del cerebro y adición de datas
-cerebro = bt.Cerebro()
-cerebro.addstrategy(StrategySMA10)
-cerebro.addstrategy(StrategySMA30)
-cerebro.addstrategy(StrategyCrossover)
-
-# Cargar datos de Yahoo Finance
-tickers = ['MSFT', 'GOOG', 'AAPL', 'TSLA']
-for ticker in tickers:
-    data = bt.feeds.YahooFinanceData(
-        dataname=ticker,
-        fromdate=datetime.datetime(2021, 1, 1),
-        todate=datetime.datetime(2021, 12, 31)
-    )
-    cerebro.adddata(data)
-
-# Establecer el capital inicial
-cerebro.broker.set_cash(100000)
-
-# Ejecutar la estrategia
-cerebro.run()
-
-# Imprimir el valor final de la cartera
-print 'Valor final de la cartera: %.2f' % cerebro.broker.getvalue()
-
-# Guardar las transacciones y el valor del portafolio en un archivo
-transactions = []
-for strat in cerebro.strats:
-    for order in strat[0].orders:
-        transactions.append([order.data._name, order.info['strategy_id'], order.executed.price, order.executed.size, order.executed.value])
-
-with open("transactions.csv", "w") as f:
-    f.write("Ticker,Estrategia,Precio,Tamaño,Valor\n")
-    for t in transactions:
-        f.write("{},{},{},{},{}\n".format(*t))
-
-print "Las transacciones se han guardado en transactions.csv"
+    cerebro.run()
+    cerebro.plot()
