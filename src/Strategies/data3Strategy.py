@@ -21,40 +21,29 @@ class data3Strategy(bt.Strategy):
                     'cantidad': cantidad,
                     'fecha': fecha
                 })
-        a = self.getposition(self.datas[0])
+
         if order.status in [order.Completed]:
             if order.isbuy():
-                # print('BUY EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
                 info = order.info['info'].pop()
                 self.getposition(self.data2).size = self.getposition(self.data2).size + order.executed.size
                 self.getposition(self.data0).size -= order.executed.size
                 add_transaction(order.data._name, 'BUY', order.executed.price, order.executed.size, order.executed.dt)
-                # print('position de data comprada', self.getposition(self.datas[0]).size)
-                # print('ojo', a.size)
                 self.buy_records.append({'clave': {order.executed.size}, 'atributo': {info}})
-                # self.getposition(self.data2).size = self.getposition(self.data2).size + order.executed.size
-                # self.getposition(self.data0).size -= order.executed.size
             elif order.issell(): 
-                # pass
-                # print('SELL EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
-                # info = order.info['info'].pop()
                 self.getposition(self.data2).size = self.getposition(self.data2).size + order.executed.size
                 self.getposition(self.data0).size = self.getposition(self.data0).size - order.executed.size
                 add_transaction(order.data._name, 'SELL', order.executed.price, order.executed.size, order.executed.dt)
-                # print('position de data vendida', self.getposition(self.datas[0]).size)
-                # self.getposition(self.data0).size = self.getposition(self.data0).size - order.executed.size
                 
     def next(self):
 
+        # logica de data 1
         portfolio_value = self.broker.getvalue()
         cash_to_spend = portfolio_value * 0.10
-        
-        # logic data 1
         price = self.datas[2].close[0]
         size1 = cash_to_spend / price
         position = self.getposition(self.data2)
-        # print('position de data 3 sin na', self.getposition(self.datas[0]).size)
 
+        # logica de sma10
         strategy_id_sma10 = 'sma10'
         if price > self.sma10[0]:
             if int(size1) > 0:
@@ -65,6 +54,7 @@ class data3Strategy(bt.Strategy):
                     self.sell(data=self.datas[2], size=int(elemento['clave'].pop()), info={strategy_id_sma10})
                     self.buy_records.remove(elemento) 
         
+        # logica de sma30
         strategy_id_sma30 = 'sma30'
         if price > self.sma30[0]:
             if int(size1) > 0:
@@ -75,6 +65,7 @@ class data3Strategy(bt.Strategy):
                     self.sell(data=self.datas[2], size=int(elemento['clave'].pop()), info={strategy_id_sma30})
                     self.buy_records.remove(elemento) 
 
+        # logica de crossover
         strategy_id_crossover = 'crossover'
         if self.crossover > 0:
             if int(size1) > 0:

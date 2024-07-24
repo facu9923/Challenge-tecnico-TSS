@@ -24,32 +24,26 @@ class data1Strategy(bt.Strategy):
         position = self.getposition(self.datas[0])
         if order.status in [order.Completed]:
             if order.isbuy():
-                print('BUY EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
-                print('position de data comprada', position.size)
                 info = order.info['info'].pop()
                 self.buy_records.append({'clave': {int(order.executed.size)}, 'atributo': {info}})
                 add_transaction(order.data._name, 'BUY', order.executed.price, order.executed.size, order.executed.dt)
-                # self.listOrders.append({'clave': order.data._name, 'orden': 'compra', 'price':order.executed.price})
             elif order.issell(): 
                 add_transaction(order.data._name, 'SELL', order.executed.price, order.executed.size, order.executed.dt)
-                print('SELL EXECUTED, Price: %.2f, Cost: %.2f, size %.2f' % (order.executed.price, order.executed.value, order.executed.size))
-                # print(int(order.executed.size))
-                print('position de data vendida', position.size)
                 pass
 
     def next(self):
 
+        # logica de data 1
         portfolio_value = self.broker.getvalue()
         cash_to_spend = portfolio_value * 0.10
         price = self.datas[0].close[0]
         size1 = cash_to_spend / price
-        # logic data 1
         position = self.getposition(self.datas[0])
-        print('position de data 1 sin na', position.size)
+
+        # logica de sma10
         strategy_id_sma10 = 'sma10'
         if price > self.sma10[0]:
             if int(size1) > 0:
-                # print(int(size1))
                 self.buy(data=self.datas[0], size=int(size1), info={strategy_id_sma10})
         elif price < self.sma10[0] and int(position.size) > 0:
             for elemento in self.buy_records:
@@ -57,7 +51,7 @@ class data1Strategy(bt.Strategy):
                     self.sell(data=self.datas[0], size=int(elemento['clave'].pop()), info={strategy_id_sma10})
                     self.buy_records.remove(elemento) 
                     
-        
+        # logica de sma30
         strategy_id_sma30 = 'sma30'
         if price > self.sma30[0]:
             if int(size1) > 0:
@@ -68,6 +62,7 @@ class data1Strategy(bt.Strategy):
                     self.sell(data=self.datas[0], size=int(elemento['clave'].pop()), info={strategy_id_sma30})
                     self.buy_records.remove(elemento) 
 
+        # logica de crossover
         strategy_id_crossover = 'crossover'
         if self.crossover > 0 :
             if int(size1) > 0:
