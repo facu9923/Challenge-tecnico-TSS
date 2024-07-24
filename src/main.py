@@ -31,7 +31,7 @@ def main():
 
     with open(filename, 'w') as csvfile:
         csvfile.write('Lista de ordenes de compra y venta de los instrumentos GOOG, AAPL, MSFT y TSLA\n\n')
-        fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha']
+        fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha(dd-mm-aaaa)']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 

@@ -1,5 +1,7 @@
 import backtrader as bt
 import csv
+from datetime import datetime, timedelta
+
 class data2Strategy(bt.Strategy):  
 
     def __init__(self):
@@ -18,6 +20,9 @@ class data2Strategy(bt.Strategy):
 
         # funcion para agregar transacciones al archivo transactions.csv
         def add_transaction(activo, tipo, precio, cantidad, fecha):
+            base_date = datetime(1, 1, 1)
+            fecha = base_date + timedelta(days=fecha)
+            formatted_date = fecha.strftime("%d-%m-%Y")
             with open(filename, 'a') as csvfile:
                 fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -26,7 +31,7 @@ class data2Strategy(bt.Strategy):
                     'tipo': tipo,
                     'precio': precio,
                     'cantidad': cantidad,
-                    'fecha': fecha
+                    'fecha': formatted_date
                 })
 
         # logica de ordenes
