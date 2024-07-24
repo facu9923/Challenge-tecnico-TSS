@@ -1,15 +1,22 @@
 import backtrader as bt
 import csv
 class data2Strategy(bt.Strategy):  
+
     def __init__(self):
+        
+        # iniciando indicadores
         self.sma10 = bt.indicators.SimpleMovingAverage(self.datas[1], period=10, plotname="10 SMA_1")
         self.sma30 = bt.indicators.SimpleMovingAverage(self.datas[1], period=30, plotname="30 SMA_1")
         self.crossover = bt.indicators.CrossOver(self.sma10, self.sma30)
 
+        #iniciando lista de ordenes de compra y venta
         self.buy_records = [] 
 
     def notify_order(self, order):
+
         filename = 'transactions.csv'
+
+        # funcion para agregar transacciones al archivo transactions.csv
         def add_transaction(activo, tipo, precio, cantidad, fecha):
             with open(filename, 'a') as csvfile:
                 fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha']
@@ -22,7 +29,7 @@ class data2Strategy(bt.Strategy):
                     'fecha': fecha
                 })
 
-
+        # logica de ordenes
         if order.status in [order.Completed]:
             if order.isbuy():
                 self.getposition(self.data1).size = self.getposition(self.data1).size + order.executed.size
