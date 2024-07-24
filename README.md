@@ -5,6 +5,10 @@ Este proyecto se basa en realizar una estrategia que realice compra y ventas de 
 Python 2.7.18
 backtrader
 
+# Ejecucion
+"cd src"
+"py main.py"
+
 # Enunciado
 Utilizando el framework backtrader (Welcome - Backtrader ) realizar una estrategia que realice compra y ventas de activos utilizando las siguientes estrategias de simple moving averages - SMA (How To Use a Moving Average to Buy Stocks ):
 
