@@ -18,7 +18,8 @@ def main():
     cerebro.broker.setcash(100000)
     cerebro.broker.setcommission(commission=0.001)
 
-    print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
+    startingValue = cerebro.broker.getvalue()
+    print('Starting Portfolio Value: %.2f' % startingValue)
 
     inicData.addData(cerebro)
 
@@ -42,7 +43,10 @@ def main():
     
     # cerebro.plot()
 
-    print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
+    finalValue = cerebro.broker.getvalue()
+    print('Final Portfolio Value: %.2f' % finalValue)
+    print('Profit: %.2f' % (finalValue - startingValue))
+    print('Profit percentage: %.2f' % ((finalValue - startingValue) / startingValue * 100))
     print('Transactions saved in transactions.csv')
 
     Move_pyc.mover_pyc_a_directorio('pyc_files')
