@@ -39,6 +39,7 @@ def main():
 
     # Se imprimern 4 graficos, cada describe la estrategia de cada instrumento
     # Se comenta la linea para que no se muestren los graficos 
+    # a
 
     # cerebro.plot()
 
