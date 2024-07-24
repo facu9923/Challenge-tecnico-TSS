@@ -31,14 +31,19 @@ def main():
 
     with open(filename, 'w') as csvfile:
         csvfile.write('Lista de ordenes de compra y venta de los instrumentos GOOG, AAPL, MSFT y TSLA\n\n')
-        fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha(dd-mm-aaaa)']
+        fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha(dd-mm-aaaa)', 'portafolio value']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
 
     cerebro.run()
 
+    # Se imprimern 4 graficos, cada describe la estrategia de cada instrumento
+    # Se comenta la linea para que no se muestren los graficos 
+
     # cerebro.plot()
+
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
+    print('Transactions saved in transactions.csv')
 
     Move_pyc.mover_pyc_a_directorio('pyc_files')
 if __name__ == '__main__':

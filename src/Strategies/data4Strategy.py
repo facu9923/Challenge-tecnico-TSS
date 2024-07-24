@@ -24,14 +24,15 @@ class data4Strategy(bt.Strategy):
             fecha = base_date + timedelta(days=fecha)
             formatted_date = fecha.strftime("%d-%m-%Y")
             with open(filename, 'a') as csvfile:
-                fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha']
+                fieldnames = ['activo', 'tipo', 'precio', 'cantidad', 'fecha', 'portafolio value']
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writerow({
                     'activo': activo,
                     'tipo': tipo,
                     'precio': precio,
                     'cantidad': cantidad,
-                    'fecha': formatted_date
+                    'fecha': formatted_date,
+                    'portafolio value': self.broker.getvalue()
                 })
 
         # logica de ordenes
